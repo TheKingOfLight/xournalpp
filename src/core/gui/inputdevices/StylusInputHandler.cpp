@@ -41,7 +41,7 @@ auto StylusInputHandler::handleImpl(InputEvent const& event) -> bool {
             this->eventsToIgnore = this->inputContext->getSettings()->getIgnoredStylusEvents();
             if (this->eventsToIgnore > 0) {
                 this->eventsToIgnore--;  // This is already the first ignored event
-            } else {
+            } else if (event.pressure >= this->inputContext->getSettings()->getIgnoredPressure()){
                 this->eventsToIgnore = -1;
                 this->actionStart(event);
             }
