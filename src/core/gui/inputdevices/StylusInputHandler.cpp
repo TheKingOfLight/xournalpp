@@ -75,6 +75,9 @@ auto StylusInputHandler::handleImpl(InputEvent const& event) -> bool {
     {
         if (this->eventsToIgnore > 0) {
             this->eventsToIgnore--;
+        } else if (event.pressure < this->inputContext->getSettings()->getIgnoredPressure()) {
+            if (this->eventsToIgnore < 0)
+                this->actionEnd(event);
         } else if (this->eventsToIgnore == 0) {
             this->eventsToIgnore = -1;
             this->actionStart(event);

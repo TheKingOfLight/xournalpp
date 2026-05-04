@@ -21,9 +21,9 @@
 #include "gui/toolbarMenubar/model/ColorPalette.h"  // for Palette
 #include "model/FormatDefinitions.h"                // for FormatUnits, XOJ_...
 #include "util/Color.h"
-#include "util/PathUtil.h"  // for getConfigFile
-#include "util/Util.h"      // for PRECISION_FORMAT_...
-#include "util/i18n.h"      // for _
+#include "util/PathUtil.h"    // for getConfigFile
+#include "util/Util.h"        // for PRECISION_FORMAT_...
+#include "util/i18n.h"        // for _
 #include "util/safe_casts.h"  // for as_unsigned
 #include "util/utf8_view.h"   // for utf8_view
 
@@ -57,6 +57,7 @@ void Settings::loadDefault() {
     this->pressureSensitivity = true;
     this->minimumPressure = 0.05;
     this->pressureMultiplier = 1.0;
+    this->ignoredPressure = 0.00;
     this->pressureGuessing = false;
     this->zoomGesturesEnabled = true;
 
@@ -413,6 +414,8 @@ void Settings::parseItem(xmlDocPtr doc, xmlNodePtr cur) {
         this->minimumPressure = std::max(0.01, g_ascii_strtod(reinterpret_cast<const char*>(value), nullptr));
     } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("pressureMultiplier")) == 0) {
         this->pressureMultiplier = g_ascii_strtod(reinterpret_cast<const char*>(value), nullptr);
+    } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("ignoredPressure")) == 0) {
+        this->ignoredPressure = g_ascii_strtod(reinterpret_cast<const char*>(value), nullptr);
     } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("zoomGesturesEnabled")) == 0) {
         this->zoomGesturesEnabled = xmlStrcmp(value, reinterpret_cast<const xmlChar*>("true")) == 0;
     } else if (xmlStrcmp(name, reinterpret_cast<const xmlChar*>("selectedToolbar")) == 0) {
@@ -1012,6 +1015,8 @@ void Settings::save() {
     SAVE_BOOL_PROP(pressureSensitivity);
     SAVE_DOUBLE_PROP(minimumPressure);
     SAVE_DOUBLE_PROP(pressureMultiplier);
+    SAVE_DOUBLE_PROP(ignoredPressure);
+
 
     SAVE_BOOL_PROP(zoomGesturesEnabled);
 
@@ -1675,6 +1680,8 @@ void Settings::setPressureGuessingEnabled(bool b) {
     this->pressureGuessing = b;
     save();
 }
+
+double Settings::getIgnoredPressure() const { return this->ignoredPressure; }
 
 double Settings::getMinimumPressure() const { return this->minimumPressure; }
 void Settings::setMinimumPressure(double minimumPressure) {

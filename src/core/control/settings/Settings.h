@@ -142,6 +142,7 @@ public:
     /**
      * Input device pressure options
      */
+    double getIgnoredPressure() const;
     double getMinimumPressure() const;
     void setMinimumPressure(double minimumPressure);
 
@@ -639,6 +640,8 @@ private:
      */
     double minimumPressure{};
     double pressureMultiplier{};
+    double ignoredPressure{};
+
 
     /**
      * If the touch zoom gestures are enabled
